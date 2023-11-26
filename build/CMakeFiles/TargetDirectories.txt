@@ -1,4 +1,0 @@
-/home/patrick/project/microWM/build/CMakeFiles/microWM.dir
-/home/patrick/project/microWM/build/CMakeFiles/test.dir
-/home/patrick/project/microWM/build/CMakeFiles/edit_cache.dir
-/home/patrick/project/microWM/build/CMakeFiles/rebuild_cache.dir
