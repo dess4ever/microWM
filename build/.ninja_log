@@ -1,0 +1,27 @@
+# ninja log v5
+1402	5902	1700496444624111546	CMakeFiles/test.dir/modules/XCBEventsManager.cpp.o	d0b889d7cb9d7e3b
+34	4232	1700496442955992701	CMakeFiles/test.dir/test.cpp.o	4704962a37f99ddc
+1	5434	1700496444152077916	CMakeFiles/microWM.dir/modules/configurationWindow.cpp.o	e5979dcd5a51caf6
+2001	5479	1700496444204081621	CMakeFiles/test.dir/modules/displayInfo.cpp.o	a8ac103a4231ff08
+0	3664	1700496442367950805	CMakeFiles/microWM.dir/microWM.cpp.o	5d6a0d3ef57edf30
+20	2001	1700496440727833954	CMakeFiles/microWM.dir/modules/textUtil.cpp.o	27580cab099c4738
+2	3872	1700496442595967050	CMakeFiles/microWM.dir/modules/logManager.cpp.o	e7fd78c62c701cdb
+1	4087	1700496442811982440	CMakeFiles/microWM.dir/modules/XCBEventsManager.cpp.o	aa0bdbc712a61165
+8341	8474	1700496447200295088	test	7fa9de1004fe0dc0
+3664	6459	1700496445184151447	CMakeFiles/test.dir/modules/EWMHManager.cpp.o	b911a99f3053a1c6
+1	4565	1700496443288016355	CMakeFiles/microWM.dir/modules/xcbManager.cpp.o	1ba157d475fbd096
+35	4977	1700496443684044571	CMakeFiles/test.dir/modules/xcbManager.cpp.o	84ba8d7c81e3d5b6
+3872	5179	1700496443904060246	CMakeFiles/test.dir/modules/SocketUnix.cpp.o	ccdc66ece33521e0
+2	1402	1700496440127791204	CMakeFiles/microWM.dir/modules/SocketUnix.cpp.o	8c90a02689c5874
+4977	5942	1700496444668114681	CMakeFiles/test.dir/modules/textUtil.cpp.o	7e595ab0ed9efdcb
+2	6055	1700496444776122376	CMakeFiles/microWM.dir/modules/window.cpp.o	90d8ea44061af898
+3597	7646	1700496446368235807	CMakeFiles/test.dir/modules/configurationWindow.cpp.o	5ce5e60073cb5787
+1	5959	1700496444680115537	CMakeFiles/microWM.dir/modules/display.cpp.o	354f23bf25020b53
+6055	6234	1700496444960135487	microWM	aeebc46d9d45101
+4232	7117	1700496445844198472	CMakeFiles/test.dir/modules/logManager.cpp.o	31563faaa853bb85
+4565	8341	1700496447064285398	CMakeFiles/test.dir/modules/log.cpp.o	625095c8019146e7
+15	5839	1700496444560106986	CMakeFiles/microWM.dir/modules/log.cpp.o	8418a9cbcbc23a6d
+1	3641	1700496442367950805	CMakeFiles/microWM.dir/modules/displayInfo.cpp.o	f48b93a58c14275c
+4087	7721	1700496446444241222	CMakeFiles/test.dir/modules/window.cpp.o	d15cebc75f9de27a
+1	3597	1700496442307946530	CMakeFiles/microWM.dir/modules/EWMHManager.cpp.o	915572b237fa6a6a
+3641	7796	1700496446520246637	CMakeFiles/test.dir/modules/display.cpp.o	df36769db343c836
