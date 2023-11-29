@@ -436,6 +436,78 @@ void XcbManager::toggleHidden(xcb_window_t window)
     xcb_flush(connection);
 }
 
+void XcbManager::addMaximizedVert(xcb_window_t window)
+{
+    xcb_atom_t atom = ewmhManager->EWMH._NET_WM_STATE_MAXIMIZED_VERT;
+    xcb_ewmh_set_wm_state(&ewmhManager->EWMH, window, 1, &atom);
+    windows[window].atoms.push_back(EWMH_STATE_MAXIMIZED_VERT);
+    ConfigurationWindow config=windows[window].normalConfiguration;
+    config.y=getDisplayConfiguration()[config.displayScreen].y;
+    config.height=getDisplayConfiguration()[config.displayScreen].height;
+    applyGeometryConfiguration(config,false);
+    xcb_flush(connection);
+}
+
+void XcbManager::removeMaximizedVert(xcb_window_t window)
+{
+    xcb_atom_t atom = ewmhManager->EWMH._NET_WM_STATE_MAXIMIZED_VERT;
+    xcb_ewmh_set_wm_state(&ewmhManager->EWMH, window, 0, &atom);
+    auto &atoms = windows[window].atoms;
+    atoms.erase(std::remove(atoms.begin(), atoms.end(), EWMH_STATE_MAXIMIZED_VERT), atoms.end());
+    ConfigurationWindow config=windows[window].normalConfiguration;
+    applyGeometryConfiguration(config,true);
+    xcb_flush(connection);
+}
+
+void XcbManager::toggleMaximizedVert(xcb_window_t window)
+{
+    auto &atoms = windows[window].atoms;
+    if (std::find(atoms.begin(), atoms.end(), EWMH_STATE_MAXIMIZED_VERT) != atoms.end())
+    {
+        removeMaximizedVert(window);
+    }
+    else
+    {
+        addMaximizedVert(window);
+    }
+}
+
+void XcbManager::addMaximizedHoriz(xcb_window_t window)
+{
+    xcb_atom_t atom = ewmhManager->EWMH._NET_WM_STATE_MAXIMIZED_HORZ;
+    xcb_ewmh_set_wm_state(&ewmhManager->EWMH, window, 1, &atom);
+    windows[window].atoms.push_back(EWMH_STATE_MAXIMIZED_HORZ);
+    ConfigurationWindow config=windows[window].normalConfiguration;
+    config.x=getDisplayConfiguration()[config.displayScreen].x;
+    config.width=getDisplayConfiguration()[config.displayScreen].width;
+    applyGeometryConfiguration(config,false);
+    xcb_flush(connection);
+}
+
+void XcbManager::removeMaximizedHoriz(xcb_window_t window)
+{
+    xcb_atom_t atom = ewmhManager->EWMH._NET_WM_STATE_MAXIMIZED_HORZ;
+    xcb_ewmh_set_wm_state(&ewmhManager->EWMH, window, 0, &atom);
+    auto &atoms = windows[window].atoms;
+    atoms.erase(std::remove(atoms.begin(), atoms.end(), EWMH_STATE_MAXIMIZED_HORZ), atoms.end());
+    ConfigurationWindow config=windows[window].normalConfiguration;
+    applyGeometryConfiguration(config,true);
+    xcb_flush(connection);
+}
+
+void XcbManager::toggleMaximizedHoriz(xcb_window_t window)
+{
+    auto &atoms = windows[window].atoms;
+    if (std::find(atoms.begin(), atoms.end(), EWMH_STATE_MAXIMIZED_HORZ) != atoms.end())
+    {
+        removeMaximizedHoriz(window);
+    }
+    else
+    {
+        addMaximizedHoriz(window);
+    }
+}
+
 xcb_window_t XcbManager::getActiveWindow()
 {
     // Je parcours windows et je récupère la fenêtre qui a le state EWMH_STATE_FOCUSED 

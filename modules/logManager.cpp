@@ -141,6 +141,17 @@ std::string LogManager::getAllLogsForSocket() {
     return serializeLogs(logs);
 }
 
+std::string LogManager::getFilteredLogByCall(std::string call)
+{
+    std::vector<Log>tpLogs = logs;
+    auto end_it= std::remove_if(tpLogs.begin(),tpLogs.end(),[&](const Log& log)
+    {
+        return log.fromFunction!=call;
+    });
+    tpLogs.erase(end_it,tpLogs.end());
+    return serializeLogs(tpLogs);
+}
+
 // Fonction auxiliaire pour imprimer un log
 void LogManager::printLog(const Log& log) {
     std::stringstream ss;

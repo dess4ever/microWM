@@ -70,6 +70,7 @@ struct Window
     int transientFor{0};
     EWMHtype type;
     int order{0};
+    int pid{0};
 };
 
 std::string serializeWindow(const Window &window);
@@ -77,3 +78,8 @@ Window deserializeWindow(const std::string &serializedWindow);
 std::string serializeWindows(const std::vector<Window> &windows);
 std::vector<Window> deserializeWindows(const std::string &serializedWindows);
 std::string windowToString(const Window &window);
+
+std::string serializeHint(const WMNormalHints &normalHint);
+WMNormalHints deserializeHint(const std::string &serializedNormalHint);
+std::string serializeHints(const std::vector<WMNormalHints> &normalHints);
+std::vector<WMNormalHints> deserializeWMNormalHints(const std::string &serializedNormalHints);

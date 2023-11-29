@@ -36,8 +36,9 @@ public:
     void printLogBySeverity(LogSeverity severity);
     // afficher le log dans la console en format severity: message avec severity en rouge si danger, en orange si error, en jaune si warning  en vert si info
     void printAllLog();
-    // Transforme les logs en json
+    // Transformation des logs en json pour le Socket
     std::string getAllLogsForSocket();
-    
+    // Transformation des logs filtré par fonction appelante en json pour le socket
+    std::string getFilteredLogByCall(std::string call);
 };
 

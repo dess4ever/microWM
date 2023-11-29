@@ -100,6 +100,10 @@ int main()
 					microWMTestClient->send("SetDockHeight"," "+message.jsonArguments);
 					logManager.addLog(Log("Changement de la hauteur du dock:"+message.jsonArguments +"px",LogSeverity::Info,"microWM-main"));
 				}
+				else if(message.function=="getFilteredLogByCall")
+				{
+					microWMTestClient->send("logs",logManager.getFilteredLogByCall(message.jsonArguments));
+				}	
 				else
 				{
 					microWMTestClient->send("Attention! ","Fonction non gérée");

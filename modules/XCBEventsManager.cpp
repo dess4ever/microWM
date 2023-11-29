@@ -149,9 +149,10 @@ void XCBEventsManager::validateMapRequest()
         xcbManager->windows[window].atoms.erase(std::remove(xcbManager->windows[window].atoms.begin(), xcbManager->windows[window].atoms.end(), EWMH_STATE_HIDDEN), xcbManager->windows[window].atoms.end());
     }
     // Sinon je l'ajoute à la liste des fenêtres gérées par le gestionnaire de fenêtres
-    else
+    else if(window!=0)
     {
         // je récupère les informations sur la fenêtre
+
         Window ewmhWindow=xcbManager->getWindow(window);
         ewmhWindow.order=xcbManager->countWindow;
         xcbManager->countWindow+=1;
@@ -273,7 +274,9 @@ void XCBEventsManager::handleEvent()
                         { "_NET_WM_STATE_FULLSCREEN", [&](xcb_window_t win){ xcbManager->removeFullscreen(win); } },                   
                         { "_NET_WM_STATE_ABOVE", [&](xcb_window_t win){ xcbManager->removeAbove(win); } },   
                         { "_NET_WM_STATE_BELOW", [&](xcb_window_t win){ xcbManager->removeBelow(win); } },
-                        { "_NET_WM_STATE_HIDDEN", [&](xcb_window_t win){ xcbManager->removeHidden(win); } }   
+                        { "_NET_WM_STATE_HIDDEN", [&](xcb_window_t win){ xcbManager->removeHidden(win); } },
+                        { "_NET_WM_STATE_MAXIMIZED_VERT", [&](xcb_window_t win){ xcbManager->removeMaximizedVert(win); } },
+                        { "_NET_WM_STATE_MAXIMIZED_HORIZ", [&](xcb_window_t win){ xcbManager->removeMaximizedHoriz(win); } }  
                     },
                     },
                     {
@@ -282,7 +285,9 @@ void XCBEventsManager::handleEvent()
                         { "_NET_WM_STATE_FULLSCREEN", [&](xcb_window_t win){ xcbManager->addFullscreen(win); } },
                         { "_NET_WM_STATE_ABOVE", [&](xcb_window_t win){ xcbManager->addAbove(win); } },
                         { "_NET_WM_STATE_BELOW", [&](xcb_window_t win){ xcbManager->addBelow(win); } },
-                        { "_NET_WM_STATE_HIDDEN", [&](xcb_window_t win){ xcbManager->addHidden(win); } }
+                        { "_NET_WM_STATE_HIDDEN", [&](xcb_window_t win){ xcbManager->addHidden(win); } },
+                        { "_NET_WM_STATE_MAXIMIZED_VERT", [&](xcb_window_t win){ xcbManager->addMaximizedVert(win); } },
+                        { "_NET_WM_STATE_MAXIMIZED_HORIZ", [&](xcb_window_t win){ xcbManager->addMaximizedHoriz(win); } }                          
                     },
                     },
                     {
@@ -291,7 +296,9 @@ void XCBEventsManager::handleEvent()
                         { "_NET_WM_STATE_FULLSCREEN", [&](xcb_window_t win){ xcbManager->toggleFullscreen(win); } },
                         { "_NET_WM_STATE_ABOVE", [&](xcb_window_t win){ xcbManager->toggleAbove(win); } },
                         { "_NET_WM_STATE_BELOW", [&](xcb_window_t win){ xcbManager->toggleBelow(win); } },
-                        { "_NET_WM_STATE_HIDDEN", [&](xcb_window_t win){ xcbManager->toggleHidden(win); } }
+                        { "_NET_WM_STATE_HIDDEN", [&](xcb_window_t win){ xcbManager->toggleHidden(win); } },
+                        { "_NET_WM_STATE_MAXIMIZED_VERT", [&](xcb_window_t win){ xcbManager->toggleMaximizedVert(win); } },
+                        { "_NET_WM_STATE_MAXIMIZED_HORIZ", [&](xcb_window_t win){ xcbManager->toggleMaximizedHoriz(win); } }                         
                     },
                     },
                 };

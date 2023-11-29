@@ -144,6 +144,12 @@ void EWMHManager::setActiveWindow(xcb_window_t window)
 
 Window EWMHManager::getWindow(xcb_window_t window)
 {
+    xcb_window_t rootWindow = xcb_setup_roots_iterator(xcb_get_setup(connection)).data->root;
+    
+    // Si la fenêtre est la fenêtre racine, renvoyez nullptr.
+    if (window == rootWindow) {
+        return Window();
+    }
     ConfigurationWindow configuration;
     configuration.windowId = window;
     // je récupère les informations sur la fenêtre
@@ -194,6 +200,20 @@ Window EWMHManager::getWindow(xcb_window_t window)
         windowInfo.transientFor = *windowTransientFor;
     }
     free(replyTransientFor);
+
+    // Je récupère le PID de la fenêtre
+    xcb_get_property_cookie_t pidCookie = xcb_get_property(connection, 0, window, EWMH._NET_WM_PID, XCB_ATOM_CARDINAL, 0, 1);
+    xcb_get_property_reply_t *pidReply = xcb_get_property_reply(connection, pidCookie, NULL);
+    if (pidReply && (pidReply->type == XCB_ATOM_CARDINAL) && (pidReply->format == 32) && (xcb_get_property_value_length(pidReply) == sizeof(uint32_t))) {
+        uint32_t *pidValue = (uint32_t *)xcb_get_property_value(pidReply);
+        windowInfo.pid = static_cast<int>(*pidValue);
+    } else {
+        windowInfo.pid = 0; // Aucun PID trouvé ou la propriété n'existe pas.
+    }
+
+    if (pidReply) {
+        free(pidReply);
+    }
 
     return windowInfo;
 }

@@ -103,6 +103,18 @@ public:
     void removeHidden(xcb_window_t window);
     // fonction qui toggle le state hidden
     void toggleHidden(xcb_window_t window);
+    // Fonction qui ajoute _NET_WM_STATE_MAXIMIZED_VERT
+    void addMaximizedVert(xcb_window_t window);
+    //  Fonction qui retire _NET_WM_STATE_MAXIMIZED_VERT
+    void removeMaximizedVert(xcb_window_t window);
+    // Fonction qui toggle _NET_WM_STATE_MAXIMIZED_VERT
+    void toggleMaximizedVert(xcb_window_t window);
+    // Fonction qui ajoute _NET_WM_STATE_MAXIMIZED_HORIZ
+    void addMaximizedHoriz(xcb_window_t window);
+    //  Fonction qui retire _NET_WM_STATE_MAXIMIZED_HORIZ
+    void removeMaximizedHoriz(xcb_window_t window);
+    // Fonction qui toggle _NET_WM_STATE_MAXIMIZED_HORIZ
+    void toggleMaximizedHoriz(xcb_window_t window);     
     // Fonction qui parcours windows pour récupérer la fenêtre qui a le focus
     xcb_window_t getActiveWindow();
     // Fonction qui donne le focus à une fenêtre

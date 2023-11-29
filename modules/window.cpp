@@ -43,6 +43,65 @@ EWMHtype stringToEwmhType(const std::string& str) {
     return EWMH_WINDOW_TYPE_UNKNOWN;
 }
 
+// Sérialise un objet WMNormalHints en string JSON
+std::string serializeHint(const WMNormalHints &normalHint) {
+    json j;
+    j["flags"] = normalHint.flags;
+    j["min_width"] = normalHint.min_width;
+    j["min_height"] = normalHint.min_height;
+    j["max_width"] = normalHint.max_width;
+    j["max_height"] = normalHint.max_height;
+    j["base_width"] = normalHint.base_width;
+    j["base_height"] = normalHint.base_height;
+    j["width_inc"] = normalHint.width_inc;
+    j["height_inc"] = normalHint.height_inc;
+    j["min_aspect_num"] = normalHint.min_aspect_num;
+    j["min_aspect_den"] = normalHint.min_aspect_den;
+    j["max_aspect_num"] = normalHint.max_aspect_num;
+    j["max_aspect_den"] = normalHint.max_aspect_den;
+    j["win_gravity"] = normalHint.win_gravity;
+    return j.dump();
+}
+
+// Désérialise un objet JSON en WMNormalHints
+WMNormalHints deserializeHint(const json &j) {
+    WMNormalHints normalHint;
+    normalHint.flags = j["flags"];
+    normalHint.min_width = j["min_width"];
+    normalHint.min_height = j["min_height"];
+    normalHint.max_width = j["max_width"];
+    normalHint.max_height = j["max_height"];
+    normalHint.base_width = j["base_width"];
+    normalHint.base_height = j["base_height"];
+    normalHint.width_inc = j["width_inc"];
+    normalHint.height_inc = j["height_inc"];
+    normalHint.min_aspect_num = j["min_aspect_num"];
+    normalHint.min_aspect_den = j["min_aspect_den"];
+    normalHint.max_aspect_num = j["max_aspect_num"];
+    normalHint.max_aspect_den = j["max_aspect_den"];
+    normalHint.win_gravity = j["win_gravity"];
+    return normalHint;
+}
+
+// Sérialise un vecteur de WMNormalHints en JSON string
+std::string serializeHints(const std::vector<WMNormalHints> &normalHints) {
+    json j = json::array();
+    for (const WMNormalHints &hint : normalHints) {
+        j.push_back(json::parse(serializeHint(hint)));
+    }
+    return j.dump();
+}
+
+// Désérialise un vecteur de WMNormalHints à partir d'une JSON string
+std::vector<WMNormalHints> deserializeWMNormalHints(const std::string &serializedNormalHints) {
+    std::vector<WMNormalHints> normalHints;
+    json j = json::parse(serializedNormalHints);
+    for (const json &serializedHint : j) {
+        normalHints.push_back(deserializeHint(serializedHint));
+    }
+    return normalHints;
+}
+
 // Fonction utilitaire pour sérialiser un vecteur d'EWMHState
 json serializeEWMHStates(const std::vector<EWMHSTATES>& atoms) {
     json jStates = json::array();
@@ -61,31 +120,16 @@ std::vector<EWMHSTATES> deserializeEWMHSTATES(const json& jAtoms) {
     return states;
 }
 
-// Fonction utilitaire pour sérialiser WMNormalHints
-json serializeWMNormalHints(const WMNormalHints& hints) {
-    json j;
-    j["flags"] = hints.flags;
-    // Ajoutez d'autres champs ici...
-    return j;
-}
-
-// Fonction utilitaire pour désérialiser WMNormalHints
-WMNormalHints deserializeWMNormalHints(const json& j) {
-    WMNormalHints hints;
-    hints.flags = j["flags"].get<int>();
-    // Ajoutez d'autres champs ici...
-    return hints;
-}
-
 // Sérialise un objet Window en string JSON
 std::string serializeWindow(const Window &window) {
     json j;
     j["normalConfiguration"] = json::parse(serializeConfigurationWindow(window.normalConfiguration));
     j["states"] = serializeEWMHStates(window.atoms);
-    j["normalHints"] = json::array(); // À remplacer par la sérialisation réelle des normalHints
+    j["normalHints"] =  json::parse(serializeHints(window.normalHints));  // À remplacer par la sérialisation réelle des normalHints
     j["isOverrideRedirect"] = window.isOverrideRedirect;
     j["transientFor"] = window.transientFor;
     j["type"] = ewmhTypeToString(window.type);
+    j["pid"] = window.pid;
     return j.dump();
 }
 
@@ -98,7 +142,8 @@ Window deserializeWindow(const std::string &serializedWindow) {
     window.isOverrideRedirect = j["isOverrideRedirect"].get<bool>();
     window.transientFor = j["transientFor"].get<int>();
     window.type = stringToEwmhType(j["type"].get<std::string>());
-    // Les normalHints doivent également être désérialisés, si nécessaire...
+    window.pid = j["pid"].get<int>();
+    window.normalHints = deserializeWMNormalHints(j["normalHints"].dump());
     return window;
 }
 
@@ -123,15 +168,35 @@ std::vector<Window> deserializeWindows(const std::string &serializedWindows) {
 
 // Convertit un objet Window en string descriptive (pour le debug, par exemple)
 std::string windowToString(const Window &window) {
-    // Ceci est une fonction d'appoint qui ne sérialise pas complètement l'objet
-    // mais renvoie une représentation string simplifiée
     std::stringstream ss;
-    ss << "Window ID: " << window.normalConfiguration.windowId << ", ";
-    ss << "Type: " << ewmhTypeToString(window.type) << ", ";
-    ss << "States: ";
+    ss << "Window Information: \n";
+    ss << "  Window ID: " << window.normalConfiguration.windowId << "\n";
+    ss << "  Type: " << ewmhTypeToString(window.type) << "\n";
+    ss << "  PID: " << window.pid << "\n";
+    ss << "  Order: " << window.order << "\n";
+    ss << "  Is Override Redirect: " << (window.isOverrideRedirect ? "Yes" : "No") << "\n";
+    ss << "  Transient For: " << window.transientFor << "\n";
+    ss << "  States: ";
     for (EWMHSTATES state : window.atoms) {
-        ss << static_cast<int>(state) << " ";
+        ss << state << " "; 
     }
-    ss << "(...)";
+    ss << "\n";
+    ss << "  Normal Hints: \n";
+    for (const WMNormalHints &hint : window.normalHints) {
+        ss << "    Flags: " << hint.flags << "\n";
+        ss << "    Min Width: " << hint.min_width << "\n";
+        ss << "    Min Height: " << hint.min_height << "\n";
+        ss << "    Max Width: " << hint.max_width << "\n";
+        ss << "    Max Height: " << hint.max_height << "\n";
+        ss << "    Base Width: " << hint.base_width << "\n";
+        ss << "    Base Height: " << hint.base_height << "\n";
+        ss << "    Width Increment: " << hint.width_inc << "\n";
+        ss << "    Height Increment: " << hint.height_inc << "\n";
+        ss << "    Min Aspect Num: " << hint.min_aspect_num << "\n";
+        ss << "    Min Aspect Den: " << hint.min_aspect_den << "\n";
+        ss << "    Max Aspect Num: " << hint.max_aspect_num << "\n";
+        ss << "    Max Aspect Den: " << hint.max_aspect_den << "\n";
+        ss << "    Win Gravity: " << hint.win_gravity << "\n\n";
+    }
     return ss.str();
 }

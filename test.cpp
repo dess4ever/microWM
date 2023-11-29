@@ -29,7 +29,6 @@ int main()
         }
         SocketMessage fMessage=parseInputToSocketMessage(input);
         microWMSocketClient->send(fMessage);
-        std::cout << "argument:" <<fMessage.jsonArguments;
         // J'attend La réponse
         if(!haveMessage)
         {
@@ -39,8 +38,20 @@ int main()
         std::vector<SocketMessage> messages=microWMTestServer->receive();
         for(SocketMessage message:messages)
         {
-            std::cout << message.function << "\n" << message.jsonArguments << std::endl;
-            std::cout.flush();
+            if(message.function=="windows")
+            {
+                std::vector<Window> windows;
+                windows=deserializeWindows(message.jsonArguments);
+                for(auto window:windows)
+                {
+                    std::cout << windowToString(window);
+                }
+            }
+            else
+            {
+                std::cout << message.function << "\n" << message.jsonArguments << std::endl;
+                std::cout.flush();
+            }
         }
 
     }
