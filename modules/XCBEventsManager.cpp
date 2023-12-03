@@ -259,9 +259,10 @@ void XCBEventsManager::handleEvent()
         {
             xcb_client_message_event_t *client_message = (xcb_client_message_event_t *)the_events;
             std::string atom_name = get_atom_name(&xcb_get_atom_name_reply, xcbManager->getConnection(), client_message->type);
+            xcb_window_t window = client_message->window;
+
             if(atom_name =="_NET_WM_STATE"){
                 std::string for_atom_name = get_atom_name(&xcb_get_atom_name_reply, xcbManager->getConnection(), client_message->data.data32[1]);
-                xcb_window_t window = client_message->window;
                 bool processed = false;
 
                 using action_func = std::function<void(xcb_window_t)>;
@@ -314,6 +315,32 @@ void XCBEventsManager::handleEvent()
 
                 if(!processed){
                     logManager->addLog(Log("Gestion de l'atome _NET_WM_STATE non gérée"+ for_atom_name, LogSeverity::Warning, "XCBEventManager->handleEvent"));
+                }
+            }
+            else if(atom_name=="WM_CHANGE_STATE")
+            {
+                switch(client_message->data.data32[0])
+                {
+                    case 3: // Iconic state
+                    {
+                        this->xcbManager->addHidden(window);
+                    }
+                    break;
+                    case 1: // Normal state
+                    {
+                        this->xcbManager->removeHidden(window);
+                    }
+                    break;
+                    case 0: // Widthdraw state
+                    {
+                        this->xcbManager->addHidden(window);
+                    }
+                    break;
+                    default:
+                    {
+                        logManager->addLog(Log("Gestion non gérée pour WM_CHANGE_STATE:"+ std::to_string(client_message->data.data32[0]), LogSeverity::Warning, "XCBEventManager->handleEvent"));
+                    }
+                    break;
                 }
             }
             else
