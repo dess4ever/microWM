@@ -118,7 +118,7 @@ public:
     // Fonction qui parcours windows pour récupérer la fenêtre qui a le focus
     xcb_window_t getActiveWindow();
     // Fonction qui donne le focus à une fenêtre
-    void setActiveWindow(xcb_window_t window);
+    void setActiveWindow(xcb_window_t window, bool onTop);
     // Fonction qui met la fenêtre active en haut a gauche de l'écran sur lequel elle est
     void setWindowOnTopLeft(xcb_window_t window);
     // Fonction qui met la fenêtre active en haut a droite de l'écran sur lequel elle est

@@ -534,7 +534,7 @@ void XcbManager::setDockHeight(uint32_t height)
     restack_windows();
 }
 
-void XcbManager::setActiveWindow(xcb_window_t window)
+void XcbManager::setActiveWindow(xcb_window_t window, bool onTop)
 {
     if (windows.find(window) != windows.end())
     {
@@ -555,6 +555,13 @@ void XcbManager::setActiveWindow(xcb_window_t window)
             ewmhManager->setActiveWindow(window);
             // Je donne le focus à la fenêtre
             xcb_set_input_focus(connection, XCB_INPUT_FOCUS_POINTER_ROOT, window, XCB_CURRENT_TIME);
+            // Si la fenêtre doit être on Top
+            if(onTop)
+            {
+                countWindow+=1;
+                windows[window].order=countWindow;
+                restack_windows();
+            }
             // Je donne l'atôme active window
             xcb_ewmh_set_active_window(&ewmhManager->EWMH, 0, window);
             // Je parcours toutes les fenêtres gérées par le gestionnaire de fenêtres pour mettre l'atome _NET_WM_STATE_FOCUSED sur la fenêtre qui a le focus sauf si desktop

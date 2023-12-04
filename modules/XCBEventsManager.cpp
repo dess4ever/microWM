@@ -181,7 +181,7 @@ void XCBEventsManager::validateMapRequest()
             }
         }
         // Je met le focus sur la fenêtre
-        xcbManager->setActiveWindow(window);
+        xcbManager->setActiveWindow(window,false);
     }
 
     // Je mappe la fenêtre
@@ -343,6 +343,10 @@ void XCBEventsManager::handleEvent()
                     break;
                 }
             }
+            else if(atom_name=="_NET_ACTIVE_WINDOW")
+            {
+                xcbManager->setActiveWindow(window,true);
+            }
             else
             {
                     logManager->addLog(Log("Gestion non gérée pour:"+ atom_name, LogSeverity::Warning, "XCBEventManager->handleEvent"));
@@ -358,7 +362,7 @@ void XCBEventsManager::handleEvent()
             if(window!=0)
             {
                 // Je donne le focus à la fenêtre
-                xcbManager->setActiveWindow(window);
+                xcbManager->setActiveWindow(window,false);
             }
         }
             break;
