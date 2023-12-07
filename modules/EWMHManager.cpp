@@ -150,6 +150,7 @@ Window EWMHManager::getWindow(xcb_window_t window)
     if (window == rootWindow) {
         return Window();
     }
+
     ConfigurationWindow configuration;
     configuration.windowId = window;
     // je récupère les informations sur la fenêtre
@@ -214,6 +215,25 @@ Window EWMHManager::getWindow(xcb_window_t window)
     if (pidReply) {
         free(pidReply);
     }
+
+    // Ici, nous récupérons les _NET_WM_STATE de la fenêtre et adaptons la configuration
+    xcb_get_property_cookie_t stateCookie = xcb_get_property(connection, 0, window, EWMH._NET_WM_STATE, XCB_ATOM_ATOM, 0, UINT32_MAX);
+    xcb_get_property_reply_t *stateReply = xcb_get_property_reply(connection, stateCookie, NULL);
+
+    if (stateReply && stateReply->type == XCB_ATOM_ATOM && stateReply->format == 32) {
+        xcb_atom_t *atomList = static_cast<xcb_atom_t*>(xcb_get_property_value(stateReply));
+        int numAtoms = xcb_get_property_value_length(stateReply) / sizeof(xcb_atom_t);
+
+        for (int i = 0; i < numAtoms; i++) {
+            EWMHSTATES state =atomToEWMHSTATES(atomList[i]);
+            windowInfo.atoms.push_back(state);
+        }
+    }
+
+    if (stateReply) {
+        free(stateReply);
+    }
+
 
     return windowInfo;
 }
@@ -344,6 +364,24 @@ void EWMHManager::printWindowProperties(Window window)
         std::cout << "\t\tmax_aspect_den: " << hint.max_aspect_den << std::endl;
         std::cout << "\t\twin_gravity: " << hint.win_gravity << std::endl;
     }
+}
+
+EWMHSTATES EWMHManager::atomToEWMHSTATES(xcb_atom_t atom)
+{
+    if(atom == EWMH._NET_WM_STATE_MODAL) return EWMH_STATE_MODAL;
+    else if(atom== EWMH._NET_WM_STATE_BELOW) return EWMH_STATE_BELOW;
+    else if(atom== EWMH._NET_WM_STATE_ABOVE) return EWMH_STATE_ABOVE;
+    else if(atom== EWMH._NET_WM_STATE_DEMANDS_ATTENTION) return EWMH_STATE_DEMANDS_ATTENTION;
+    else if(atom==EWMH._NET_WM_STATE_FULLSCREEN) return EWMH_STATE_FULLSCREEN;
+    else if(atom==EWMH._NET_WM_STATE_HIDDEN) return EWMH_STATE_HIDDEN;
+    else if(atom==EWMH._NET_WM_STATE_MAXIMIZED_HORZ) return EWMH_STATE_MAXIMIZED_HORZ;
+    else if(atom==EWMH._NET_WM_STATE_MAXIMIZED_VERT) return EWMH_STATE_MAXIMIZED_VERT;
+    else if(atom==EWMH._NET_WM_STATE_MODAL) return EWMH_STATE_MODAL;
+    else if(atom==EWMH._NET_WM_STATE_SHADED) return EWMH_STATE_SHADED;
+    else if(atom==EWMH._NET_WM_STATE_SKIP_PAGER) return EWMH_STATE_SKIP_PAGER;
+    else if(atom==EWMH._NET_WM_STATE_SKIP_TASKBAR) return EWMH_STATE_SKIP_TASKBAR;
+    else if(atom==EWMH._NET_WM_STATE_STICKY) return EWMH_STATE_STICKY;
+    else return EWMH_STATE_NORMAL;
 }
 
 

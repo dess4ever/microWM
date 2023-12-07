@@ -45,13 +45,13 @@ void XCBEventsManager::ungrabNumericKeyboard()
     }
 
     xcb_keycode_t *keycodesPtr = xcb_key_symbols_get_keycode(keysyms, XK_KP_Add);
-    xcb_ungrab_key(xcbManager->getConnection(), 1, xcbManager->getScreen()->root, XCB_MOD_MASK_ANY);
+    xcb_ungrab_key(xcbManager->getConnection(), keycodesPtr[0], xcbManager->getScreen()->root, XCB_MOD_MASK_ANY);
     
     keycodesPtr = xcb_key_symbols_get_keycode(keysyms, XK_KP_Subtract);
-    xcb_ungrab_key(xcbManager->getConnection(), 1, xcbManager->getScreen()->root, XCB_MOD_MASK_ANY);
+    xcb_ungrab_key(xcbManager->getConnection(), keycodesPtr[0], xcbManager->getScreen()->root, XCB_MOD_MASK_ANY);
 
     keycodesPtr = xcb_key_symbols_get_keycode(keysyms, XK_Delete);
-    xcb_ungrab_key(xcbManager->getConnection(), 1, xcbManager->getScreen()->root, XCB_MOD_MASK_ANY);
+    xcb_ungrab_key(xcbManager->getConnection(), keycodesPtr[0], xcbManager->getScreen()->root, XCB_MOD_MASK_ANY);
 
 
     xcb_key_symbols_free(keysyms);
@@ -152,7 +152,6 @@ void XCBEventsManager::validateMapRequest()
     else if(window!=0)
     {
         // je récupère les informations sur la fenêtre
-
         Window ewmhWindow=xcbManager->getWindow(window);
         ewmhWindow.order=xcbManager->countWindow;
         xcbManager->countWindow+=1;

@@ -17,6 +17,8 @@ class EWMHManager
             EWMHtype getWindowType(xcb_window_t window);
             // Fonction pour obtenir les hints WM_NORMAL_HINTS d'une fenêtre
             std::vector<WMNormalHints> getWMNormalHints(xcb_connection_t* connection, xcb_window_t window);
+            EWMHSTATES atomToEWMHSTATES(xcb_atom_t atom);
+        
     public:
             xcb_ewmh_connection_t EWMH;
             EWMHManager(xcb_connection_t *connection);
