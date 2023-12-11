@@ -181,6 +181,14 @@ void XCBEventsManager::validateMapRequest()
         }
         // Je met le focus sur la fenêtre
         xcbManager->setActiveWindow(window,false);
+        // Si mla fenetre possede l'atôme fullscreen
+        for(EWMHSTATES state: ewmhWindow.atoms)
+        {
+            if(state=EWMHSTATES::EWMH_STATE_FULLSCREEN)
+            {
+                xcbManager->addFullscreen(window);
+            }
+        }
     }
 
     // Je mappe la fenêtre
