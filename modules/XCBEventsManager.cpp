@@ -186,6 +186,7 @@ void XCBEventsManager::validateMapRequest()
         {
             if(state=EWMHSTATES::EWMH_STATE_FULLSCREEN)
             {
+                xcbManager->removeFullscreen(window);
                 xcbManager->addFullscreen(window);
             }
         }
